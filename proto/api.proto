@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package proto;
+
+option go_package = "github.com/tgmuender/pad/proto";
+
+service PetService {
+  rpc NewPet(NewPetRequest) returns (NewPetResponse);
+}
+
+message NewPetRequest {
+  optional string name = 1;
+}
+
+message NewPetResponse {
+  string id = 1;
+  string name = 2;
+}
