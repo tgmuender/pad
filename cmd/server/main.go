@@ -7,8 +7,8 @@ import (
 )
 
 func main() {
-	var serverCommand = cmd.NewServerCmd()
-	err := serverCommand.Execute()
+	var cmd = cmd.NewRootCmd()
+	err := cmd.Execute()
 
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
