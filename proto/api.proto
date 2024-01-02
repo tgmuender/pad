@@ -6,6 +6,7 @@ option go_package = "github.com/tgmuender/pad/proto";
 
 service PetService {
   rpc NewPet(NewPetRequest) returns (NewPetResponse);
+  rpc ListPets(ListPetsRequest) returns (ListPetsResponse);
 }
 
 message NewPetRequest {
@@ -15,4 +16,17 @@ message NewPetRequest {
 message NewPetResponse {
   string id = 1;
   string name = 2;
+}
+
+message Pet {
+  string id = 1;
+  string name = 2;
+}
+
+message ListPetsResponse {
+  repeated Pet pets = 1;
+}
+
+message ListPetsRequest {
+
 }

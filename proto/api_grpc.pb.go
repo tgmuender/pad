@@ -23,6 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type PetServiceClient interface {
 	NewPet(ctx context.Context, in *NewPetRequest, opts ...grpc.CallOption) (*NewPetResponse, error)
+	ListPets(ctx context.Context, in *ListPetsRequest, opts ...grpc.CallOption) (*ListPetsResponse, error)
 }
 
 type petServiceClient struct {
@@ -42,11 +43,21 @@ func (c *petServiceClient) NewPet(ctx context.Context, in *NewPetRequest, opts .
 	return out, nil
 }
 
+func (c *petServiceClient) ListPets(ctx context.Context, in *ListPetsRequest, opts ...grpc.CallOption) (*ListPetsResponse, error) {
+	out := new(ListPetsResponse)
+	err := c.cc.Invoke(ctx, "/proto.PetService/ListPets", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PetServiceServer is the server API for PetService service.
 // All implementations must embed UnimplementedPetServiceServer
 // for forward compatibility
 type PetServiceServer interface {
 	NewPet(context.Context, *NewPetRequest) (*NewPetResponse, error)
+	ListPets(context.Context, *ListPetsRequest) (*ListPetsResponse, error)
 	mustEmbedUnimplementedPetServiceServer()
 }
 
@@ -56,6 +67,9 @@ type UnimplementedPetServiceServer struct {
 
 func (UnimplementedPetServiceServer) NewPet(context.Context, *NewPetRequest) (*NewPetResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method NewPet not implemented")
+}
+func (UnimplementedPetServiceServer) ListPets(context.Context, *ListPetsRequest) (*ListPetsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListPets not implemented")
 }
 func (UnimplementedPetServiceServer) mustEmbedUnimplementedPetServiceServer() {}
 
@@ -88,6 +102,24 @@ func _PetService_NewPet_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _PetService_ListPets_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListPetsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PetServiceServer).ListPets(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.PetService/ListPets",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PetServiceServer).ListPets(ctx, req.(*ListPetsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // PetService_ServiceDesc is the grpc.ServiceDesc for PetService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -98,6 +130,10 @@ var PetService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "NewPet",
 			Handler:    _PetService_NewPet_Handler,
+		},
+		{
+			MethodName: "ListPets",
+			Handler:    _PetService_ListPets_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

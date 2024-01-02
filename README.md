@@ -9,4 +9,5 @@ Code examples:
 
 - https://github.com/grpc/grpc-go/blob/master/examples/helloworld/greeter_server/main.go
 - https://protobuf.dev/getting-started/gotutorial/
+- https://protobuf.dev/programming-guides/style/
 - https://grpc.io/docs/languages/go/basics/#starting-the-server
