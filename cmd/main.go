@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
-	"xgmdr.com/pad/cmd/server/cmd"
+	"xgmdr.com/pad/cmd/cmd"
 )
 
 func main() {
