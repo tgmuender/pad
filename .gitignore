@@ -2,3 +2,4 @@ main
 pad
 server
 .idea
+*.sqlite
