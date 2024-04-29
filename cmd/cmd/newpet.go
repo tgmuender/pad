@@ -27,7 +27,7 @@ func newPetCommand() *cobra.Command {
 			name := args[0]
 
 			pet, err := apiClient.NewPet(ctx, &proto.NewPetRequest{
-				Name: &name,
+				Name: name,
 			})
 			if err != nil {
 				fmt.Println(err)
