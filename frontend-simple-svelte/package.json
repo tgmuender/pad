@@ -10,7 +10,7 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json --watch",
 		"lint": "prettier --check . && eslint .",
 		"format": "prettier --write .",
-		"proto": "npx protoc --ts_out ./src/lib/proto --proto_path ./proto ./proto/*.proto"
+		"proto": "npx protoc --ts_out ./src/lib/proto --proto_path ./../proto ./../proto/api.proto"
 	},
 	"devDependencies": {
 		"@protobuf-ts/grpcweb-transport": "^2.9.3",
