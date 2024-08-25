@@ -1,0 +1,93 @@
+syntax = "proto3";
+
+package proto;
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+option java_multiple_files = true;
+option java_package = "com.example.grpc";
+option java_outer_classname = "PetProto";
+
+option go_package = "github.com/tgmuender/pad/proto";
+
+service PetService {
+  rpc NewPet(NewPetRequest) returns (NewPetResponse);
+  rpc ListPets(ListPetsRequest) returns (ListPetsResponse);
+  rpc CreateMeal(CreateMealRequest) returns (ListMealsResponse);
+  rpc GetMeals(ListMealsRequest) returns(stream Meal);
+}
+
+service UserService {
+  rpc WhoAmI(google.protobuf.Empty) returns (UserResponse);
+}
+
+message UserResponse {
+  string sub = 1;
+  string email = 2;
+}
+
+message NewPetRequest {
+  string name = 1;
+  Gender gender = 2;
+  string type = 3;
+  google.protobuf.Timestamp dob = 4;
+}
+
+message NewPetResponse {
+  string id = 1;
+  string name = 2;
+}
+
+message Pet {
+  string id = 1;
+  string name = 2;
+  Gender gender = 3;
+  string type = 4;
+  google.protobuf.Timestamp dob = 5;
+}
+
+message ListPetsResponse {
+  repeated Pet pets = 1;
+}
+
+message ListPetsRequest {
+
+}
+
+message PetOverviewRequest {
+  string id = 1;
+}
+
+message CreateMealRequest {
+  Meal meal = 1;
+}
+
+message ListMealsRequest {
+  string petId = 1;
+}
+
+message ListMealsResponse {
+  repeated Meal meals = 1;
+}
+
+message Meal { //TODO: data types?
+  string id = 1;
+  string description = 2; // general info
+  int32 repetition = 3; // read (with time unit): every *1* *day*
+  string timeUnit = 4; // e.g. daily, weekly, etc.
+  string time = 5; // e.g
+  repeated MealIngredient ingredients = 6; // comp
+  string petId = 7;
+}
+
+message MealIngredient {
+  string id = 1;
+  string name = 2;
+  string quantity = 3;
+}
+
+enum Gender {
+  MALE = 0;
+  FEMALE = 1;
+}
