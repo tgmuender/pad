@@ -38,6 +38,43 @@ static_resources:
                   - name: envoy.filters.http.grpc_web
                     typed_config:
                       "@type": type.googleapis.com/envoy.extensions.filters.http.grpc_web.v3.GrpcWeb
+#                  - name: envoy.filters.http.oauth2
+#                    typed_config:
+#                      "@type": type.googleapis.com/envoy.extensions.filters.http.oauth2.v3.OAuth2
+#                      config:
+#                        token_endpoint:
+#                          cluster: oauth
+#                          # Set to the 'token_endpoint' of hydra's openid configuration
+#                          #uri: http://127.0.0.1:4444/oauth2/token
+#                          uri: http://127.0.0.1:5556/token # # Dex TOKEN endpoint
+#                          timeout: 3s
+#                        # Set to the "authorization_endpoint" of hydra's openid configuration
+#                        #authorization_endpoint: http://127.0.0.1:4444/oauth2/auth
+#                        authorization_endpoint: http://127.0.0.1:5556/auth # Dex AUTH endpoint
+#                        redirect_uri: "%REQ(x-forwarded-proto)%://%REQ(:authority)%/callback"
+#                        redirect_path_matcher:
+#                          path:
+#                            exact: /callback
+#                        signout_path:
+#                          path:
+#                            exact: /signout
+#                        credentials:
+#                          #client_id: 0cd694e3-ea49-4b24-97c7-690fddaaef82
+#                          #client_id: f58c40ce-be90-4295-bcef-40dbe41fdc44
+#                          client_id: pad
+#                          token_secret:
+#                            name: token
+#                          hmac_secret:
+#                            name: hmac
+#                        forward_bearer_token: true
+#                        disable_access_token_set_cookie: false
+#                        disable_id_token_set_cookie: false
+#                        # (Optional): defaults to 'user' scope if not provided
+#                        auth_scopes:
+#                          - openid
+#                          - email
+#                          - profile
+#                        auth_type: BASIC_AUTH
                   - name: envoy.filters.http.cors
                     typed_config:
                       "@type": type.googleapis.com/envoy.extensions.filters.http.cors.v3.Cors
@@ -78,4 +115,30 @@ static_resources:
                   address:
                     socket_address:
                       address: 127.0.0.1
-                      port_value: 5173
+                      #port_value: 4173
+                      #port_value: 5173
+                      port_value: 8000
+
+    - name: oauth
+      connect_timeout: 5s
+      type: LOGICAL_DNS
+      lb_policy: ROUND_ROBIN
+      load_assignment:
+        cluster_name: oauth
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    socket_address:
+                      address: 0.0.0.0
+                      port_value: 5556
+
+  secrets:
+    - name: token
+      generic_secret:
+        secret:
+          inline_string: testli
+    - name: hmac
+      generic_secret:
+        secret:
+          inline_string: asdf
