@@ -3,3 +3,6 @@ pad
 server
 .idea
 *.sqlite
+
+**/dex/db
+**/dex/env
