@@ -1,9 +1,9 @@
-package api
+package pet
 
 import (
 	pb "xgmdr.com/pad/proto"
 )
 
-type PetApi struct {
+type Api struct {
 	pb.UnimplementedPetServiceServer
 }

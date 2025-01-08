@@ -9,8 +9,9 @@ import (
 	"log"
 	"net"
 	"os"
-	"xgmdr.com/pad/internal/api"
-	storage "xgmdr.com/pad/internal/storage/model"
+	"xgmdr.com/pad/internal/api/pet"
+	"xgmdr.com/pad/internal/api/user"
+	"xgmdr.com/pad/internal/storage"
 	pb "xgmdr.com/pad/proto"
 )
 
@@ -26,8 +27,8 @@ func newServerCmd() *cobra.Command {
 			}
 			s := grpc.NewServer()
 
-			pb.RegisterPetServiceServer(s, &api.PetApi{})
-			pb.RegisterUserServiceServer(s, &api.UserAPi{})
+			pb.RegisterPetServiceServer(s, &pet.Api{})
+			pb.RegisterUserServiceServer(s, &user.Api{})
 			log.Printf("server listening at %v", lis.Addr())
 
 			db, err := gorm.Open(postgres.Open(os.Getenv("DB_URL")), &gorm.Config{})
@@ -37,7 +38,10 @@ func newServerCmd() *cobra.Command {
 
 			storage.Db = db
 
-			db.AutoMigrate(&storage.PetEntity{})
+			db.AutoMigrate(
+				&storage.PetEntity{},
+				&storage.MealEntity{},
+			)
 
 			if err := s.Serve(lis); err != nil {
 				log.Fatalf("failed to serve: %v", err)

@@ -4,23 +4,35 @@ import (
 	"context"
 	"fmt"
 	"github.com/golang-jwt/jwt/v5"
+	"go.uber.org/zap"
 	"google.golang.org/grpc/metadata"
 	"strings"
-	storage "xgmdr.com/pad/internal/storage/model"
+	"xgmdr.com/pad/internal/logger"
+	"xgmdr.com/pad/internal/storage"
 )
+
+// AuthenticatedIdentity Represents the authentication of the request. Should provide enough information to uniquely extract the required
+// user information. Although (issuer, subject) is technically enough to uniquely identify the user, the email  address
+// is added just to make identification easier when the data is screened by a human.
+type AuthenticatedIdentity struct {
+	// The OIDC issuer which issued the token.
+	Issuer string
+
+	// The subject of the token.
+	Subject string
+
+	// The email address from the token.
+	Email string
+}
 
 type RequestMetadata struct {
 	headerValues []string
 }
 
-func extractAuthentication(context context.Context) *AuthenticatedIdentity {
+func ExtractAuthentication(context context.Context) *AuthenticatedIdentity {
 	md, _ := metadata.FromIncomingContext(context)
 
-	authorization := md.Get("authorization")
-	fmt.Printf("authorization: %s", authorization)
-
 	requestMetadata := RequestMetadata{headerValues: md.Get("authorization")}
-	fmt.Println(requestMetadata)
 
 	return requestMetadata.extractAuthentication()
 }
@@ -29,9 +41,16 @@ func (m *RequestMetadata) extractAuthentication() *AuthenticatedIdentity {
 	var idToken string
 	var prefix = "Bearer "
 	for _, headerValue := range m.headerValues {
-		fmt.Println(headerValue)
+		logger.Get().Debug(
+			"Found 'Authorization' header",
+			zap.String("header", headerValue),
+		)
+
 		if strings.HasPrefix(headerValue, prefix) {
-			fmt.Println(headerValue)
+			logger.Get().Debug(
+				"Found bearer token",
+				zap.String("token", headerValue),
+			)
 			idToken = headerValue
 		}
 	}
@@ -51,6 +70,8 @@ func (m *RequestMetadata) extractAuthentication() *AuthenticatedIdentity {
 		},
 	)
 
+	introspectToken(token)
+
 	if claims, ok := token.Claims.(jwt.MapClaims); ok {
 		var subject, _ = claims.GetSubject()
 		var issuer, _ = claims.GetIssuer()
@@ -67,13 +88,7 @@ func (m *RequestMetadata) extractAuthentication() *AuthenticatedIdentity {
 	return nil
 }
 
-type AuthenticatedIdentity struct {
-	Issuer  string
-	Email   string
-	Subject string
-}
-
-func (identity *AuthenticatedIdentity) toOwner() *storage.Owner {
+func (identity *AuthenticatedIdentity) ToOwner() *storage.Owner {
 	return &storage.Owner{
 		Issuer:  identity.Issuer,
 		OwnerId: identity.Subject,
