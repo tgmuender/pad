@@ -104,10 +104,6 @@ staticClients:
 #    public: true
 
 connectors:
-  - type: mockCallback
-    id: mock
-    name: Example
-
   - type: google
     id: google
     name: Google
