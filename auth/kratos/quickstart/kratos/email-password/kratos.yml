@@ -42,7 +42,6 @@ selfservice:
             - http://localdev.me:4455
           # A display name which will be shown to the user on her/his device.
           display_name: Ory
-#    passkey:
 #      enabled: true
 #      config:
 #        display_name: "My Display Name"
