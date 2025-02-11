@@ -6,3 +6,5 @@ server
 
 **/dex/db
 **/dex/env
+
+bin
