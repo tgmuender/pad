@@ -9,6 +9,7 @@ import (
 	"log"
 	"net"
 	"os"
+	"xgmdr.com/pad/internal/api"
 	"xgmdr.com/pad/internal/api/pet"
 	"xgmdr.com/pad/internal/api/user"
 	"xgmdr.com/pad/internal/storage"
@@ -25,7 +26,9 @@ func newServerCmd() *cobra.Command {
 			if err != nil {
 				log.Fatalf("failed to listen: %v", err)
 			}
-			s := grpc.NewServer()
+			s := grpc.NewServer(
+				grpc.UnaryInterceptor(api.AuthenticatingInterceptor()),
+			)
 
 			pb.RegisterPetServiceServer(s, &pet.Api{})
 			pb.RegisterUserServiceServer(s, &user.Api{})

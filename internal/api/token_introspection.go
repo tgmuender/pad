@@ -10,7 +10,8 @@ import (
 	"xgmdr.com/pad/internal/logger"
 )
 
-func introspectToken(token *jwt.Token) {
+// IntrospectToken Introspects the token and prints the claims.
+func printToken(token *jwt.Token) {
 	var parts []string = strings.Split(token.Raw, ".")
 
 	for i, v := range parts {

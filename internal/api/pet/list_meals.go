@@ -5,7 +5,6 @@ import (
 	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"xgmdr.com/pad/internal/api"
 	"xgmdr.com/pad/internal/logger"
 	"xgmdr.com/pad/internal/storage"
 	pb "xgmdr.com/pad/proto"
@@ -15,7 +14,11 @@ import (
 func (m *Api) GetMeals(request *pb.ListMealsRequest, petsvc pb.PetService_GetMealsServer) error {
 	logger.Get().Debug("List meals request received")
 
-	authentication := api.ExtractAuthentication(petsvc.Context())
+	user, ok := petsvc.Context().Value("user").(*storage.User)
+	if !ok {
+		logger.Get().Debug("User not found")
+		return status.Errorf(codes.Unauthenticated, "user not found in context")
+	}
 
 	if request.GetPetId() == "" {
 		return status.Errorf(codes.InvalidArgument, "Pet ID is required")
@@ -30,7 +33,7 @@ func (m *Api) GetMeals(request *pb.ListMealsRequest, petsvc pb.PetService_GetMea
 
 	logger.Get().Debug(
 		"Listing meals for:",
-		zap.String("owner.email", authentication.Email),
+		zap.String("owner.email", user.Email),
 		zap.String("petId", request.PetId),
 	)
 

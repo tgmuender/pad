@@ -3,8 +3,8 @@ package pet
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"go.uber.org/zap"
-	"xgmdr.com/pad/internal/api"
 	"xgmdr.com/pad/internal/logger"
 	"xgmdr.com/pad/internal/storage"
 	pb "xgmdr.com/pad/proto"
@@ -14,13 +14,15 @@ import (
 func (m *Api) ListPets(grpcContext context.Context, request *pb.ListPetsRequest) (*pb.ListPetsResponse, error) {
 	logger.Get().Debug("List pets request received")
 
-	authentication := api.ExtractAuthentication(grpcContext)
+	user, ok := grpcContext.Value("user").(*storage.User)
+	if !ok {
+		logger.Get().Debug("User not found")
+		return nil, errors.New("user not found in context")
+	}
+	
+	var result = storage.FindByOwner(user)
 
-	owner := authentication.ToOwner()
-
-	var result = storage.FindByOwner(owner)
-
-	logger.Get().Debug("Pet count matching owner ", zap.Int("count", len(result)))
+	logger.Get().Debug("Pet count matching user ", zap.Int("count", len(result)))
 
 	var pets []*pb.Pet
 	for idx, pe := range result {

@@ -13,11 +13,18 @@ var Db *gorm.DB
 
 // PetEntity represents a pet in the database
 type PetEntity struct {
-	ID        uuid.UUID `gorm:"type:uuid;primary_key;"`
-	Owner     Owner     `gorm:"embedded"`
+	// The unique identifier of the pet
+	ID uuid.UUID `gorm:"type:uuid;primary_key;"`
+	// The unique identifier of the owner of the pet
+	OwnerID uuid.UUID `gorm:"type:uuid;"`
+	// The owner of the pet
+	Owner User `gorm:"foreignKey:OwnerID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	// The date and time the pet was created
 	CreatedAt time.Time
+	// The date and time the pet was last updated
 	UpdatedAt time.Time
-	Data      string `gorm:"type:jsonb" json:"data"`
+	// The data of the pet
+	Data string `gorm:"type:jsonb" json:"data"`
 }
 
 // MealEntity represents a meal in the database
@@ -41,20 +48,20 @@ func InsertPet(petEntity *PetEntity) error {
 }
 
 // FindByOwner queries the database to find all pets whose owner is set to the given owner.
-func FindByOwner(owner *Owner) []PetEntity {
-	if owner == nil {
+func FindByOwner(user *User) []PetEntity {
+	if user == nil {
 		return []PetEntity{}
 	}
 
 	var result []PetEntity
-	Db.Where(
+	/*	Db.Where(
 		&PetEntity{
 			Owner: Owner{
 				Issuer:  owner.Issuer,
 				OwnerId: owner.OwnerId,
 			},
 		},
-	).Find(&result)
+	).Find(&result)*/
 	return result
 }
 
