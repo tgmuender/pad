@@ -39,6 +39,7 @@ services:
     depends_on:
       - kratos-migrate
     image: oryd/kratos:v1.1.0
+    # Run docker run --rm -it --entrypoint='' oryd/kratos:v1.0.0 id to find the default uid:gid
     user: 10000:101
     ports:
       - '4433:4433' # public
@@ -69,6 +70,7 @@ services:
 
   hydra:
     image: oryd/hydra:v2.2.0
+    # Run docker run --rm -it --entrypoint='' oryd/hydra:v2.2.0 id to find the default uid:gid
     user: 10000:101
     ports:
       - "4444:4444" # Public port
