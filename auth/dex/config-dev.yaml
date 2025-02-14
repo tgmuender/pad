@@ -100,8 +100,14 @@ staticClients:
       - http://localhost:4180/oauth2/callback
       - http://localhost:8888/callback
     trusted: true
-#    name: 'Static Client for Device Flow'
-#    public: true
+
+  # This client is used for the CLI tool. It is not a real client and should not be used in production.
+  - id: padcli
+    name: PetAdvisor cli oauth client
+    secret: testli
+    redirectURIs:
+      - http://localhost:8080/callback
+    trusted: true
 
 connectors:
   - type: google

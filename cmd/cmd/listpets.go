@@ -10,7 +10,8 @@ import (
 
 func newListPetsCommand() *cobra.Command {
 	cmd := &cobra.Command{
-		Use: "list",
+		Use:   "list",
+		Short: "List all pets",
 		Run: func(cmd *cobra.Command, args []string) {
 			endpoint, _ := cmd.Flags().GetString("endpoint")
 

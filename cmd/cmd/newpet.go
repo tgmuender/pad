@@ -11,7 +11,8 @@ import (
 
 func newPetCommand() *cobra.Command {
 	cmd := &cobra.Command{
-		Use: "Create a new pet",
+		Use:   "create",
+		Short: "Create a new pet",
 		Args: func(cmd *cobra.Command, args []string) error {
 			if len(args) < 1 {
 				return errors.New("please provide a name")

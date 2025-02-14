@@ -18,7 +18,8 @@ import (
 
 func newServerCmd() *cobra.Command {
 	command := cobra.Command{
-		Use: "server",
+		Use:   "server",
+		Short: "Starts the api server.",
 		Run: func(cmd *cobra.Command, args []string) {
 			port, _ := cmd.Flags().GetInt("port")
 			lis, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
