@@ -25,6 +25,12 @@ func newPetCommand() *cobra.Command {
 			apiClient, ctx, cancel := client.PetServiceGrpcClient(endpoint)
 			defer cancel()
 
+			ctx, err := withAccessToken(ctx)
+			if err != nil {
+				fmt.Println("Error reading token:", err)
+				os.Exit(1)
+			}
+
 			name := args[0]
 
 			pet, err := apiClient.NewPet(ctx, &proto.NewPetRequest{
