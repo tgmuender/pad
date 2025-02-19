@@ -23,6 +23,15 @@ func (m *Api) NewPet(grpcContext context.Context, request *pb.NewPetRequest) (*p
 		return nil, errors.New("user not found in context")
 	}
 
+	// Check if a pet with the same name already exists
+	existingPet, err := storage.GetPetByName(request.GetName(), user.Id)
+	if err != nil {
+		return nil, err
+	}
+	if existingPet != nil {
+		return nil, errors.New("pet with this name already exists")
+	}
+
 	petEntity, _ := toPetEntity(user, request)
 
 	if err := storage.InsertPet(petEntity); err != nil {

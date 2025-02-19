@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"os"
+	"strings"
 	"xgmdr.com/pad/internal/client"
 	"xgmdr.com/pad/proto"
 )
@@ -21,6 +22,8 @@ func newPetCommand() *cobra.Command {
 		},
 		Run: func(cmd *cobra.Command, args []string) {
 			endpoint, _ := cmd.Flags().GetString("endpoint")
+			petType, _ := cmd.Flags().GetString("type")
+			sex, _ := cmd.Flags().GetString("sex")
 
 			apiClient, ctx, cancel := client.PetServiceGrpcClient(endpoint)
 			defer cancel()
@@ -35,6 +38,8 @@ func newPetCommand() *cobra.Command {
 
 			pet, err := apiClient.NewPet(ctx, &proto.NewPetRequest{
 				Name: name,
+				Type: petType,
+				Sex:  mapSex(sex),
 			})
 			if err != nil {
 				fmt.Println(err)
@@ -45,6 +50,19 @@ func newPetCommand() *cobra.Command {
 	}
 
 	cmd.PersistentFlags().String("endpoint", "localhost:8000", "Server endpoint for api communication.")
+	cmd.Flags().String("type", "", "Type of pet (dog or cat)")
+	cmd.Flags().String("sex", "", "male/female")
 
 	return cmd
+}
+
+func mapSex(s string) proto.Sex {
+	switch strings.ToLower(s) {
+	case "male":
+		return proto.Sex_MALE
+	case "female":
+		return proto.Sex_FEMALE
+	default:
+		return proto.Sex_UNKNOWN
+	}
 }

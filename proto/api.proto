@@ -29,7 +29,7 @@ message UserResponse {
 
 message NewPetRequest {
   string name = 1;
-  Gender gender = 2;
+  Sex sex = 2;
   string type = 3;
   google.protobuf.Timestamp dob = 4;
 }
@@ -42,7 +42,7 @@ message NewPetResponse {
 message Pet {
   string id = 1;
   string name = 2;
-  Gender gender = 3;
+  Sex sex = 3;
   string type = 4;
   google.protobuf.Timestamp dob = 5;
 }
@@ -87,7 +87,8 @@ message MealIngredient {
   string quantity = 3;
 }
 
-enum Gender {
+enum Sex {
   MALE = 0;
   FEMALE = 1;
+  UNKNOWN = 2;
 }

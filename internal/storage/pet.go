@@ -2,6 +2,7 @@ package storage
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"github.com/cockroachdb/cockroach-go/v2/crdb/crdbgorm"
 	"github.com/google/uuid"
@@ -45,6 +46,20 @@ func InsertPet(petEntity *PetEntity) error {
 			return tx.Create(&petEntity).Error
 		},
 	)
+}
+
+// GetPetByName queries the database to find a pet with the given name.
+func GetPetByName(name string, ownerId uuid.UUID) (*PetEntity, error) {
+	var pet PetEntity
+	result := Db.Where("data ->> 'name' = ? and owner_id = ?", name, ownerId).First(&pet)
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return nil, nil
+		} else {
+			return nil, result.Error
+		}
+	}
+	return &pet, nil
 }
 
 // FindByOwner queries the database to find all pets whose owner is set to the given owner.
