@@ -49,7 +49,6 @@ func newPetCommand() *cobra.Command {
 		},
 	}
 
-	cmd.PersistentFlags().String("endpoint", "localhost:8000", "Server endpoint for api communication.")
 	cmd.Flags().String("type", "", "Type of pet (dog or cat)")
 	cmd.Flags().String("sex", "", "male/female")
 

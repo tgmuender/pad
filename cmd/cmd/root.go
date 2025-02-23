@@ -14,7 +14,10 @@ func NewRootCmd() *cobra.Command {
 	cmd.AddCommand(newServerCmd())
 	cmd.AddCommand(newPetCommand())
 	cmd.AddCommand(newListPetsCommand())
+	cmd.AddCommand(newDeletePetCommand())
 	cmd.AddCommand(loginCommand())
+
+	cmd.PersistentFlags().String("endpoint", "localhost:8000", "Server endpoint for api communication.")
 
 	return &cmd
 }

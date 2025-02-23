@@ -25,6 +25,7 @@ const _ = grpc.SupportPackageIsVersion7
 type PetServiceClient interface {
 	NewPet(ctx context.Context, in *NewPetRequest, opts ...grpc.CallOption) (*NewPetResponse, error)
 	ListPets(ctx context.Context, in *ListPetsRequest, opts ...grpc.CallOption) (*ListPetsResponse, error)
+	DeletePet(ctx context.Context, in *DeletePetRequest, opts ...grpc.CallOption) (*DeletePetResponse, error)
 	CreateMeal(ctx context.Context, in *CreateMealRequest, opts ...grpc.CallOption) (*ListMealsResponse, error)
 	GetMeals(ctx context.Context, in *ListMealsRequest, opts ...grpc.CallOption) (PetService_GetMealsClient, error)
 }
@@ -49,6 +50,15 @@ func (c *petServiceClient) NewPet(ctx context.Context, in *NewPetRequest, opts .
 func (c *petServiceClient) ListPets(ctx context.Context, in *ListPetsRequest, opts ...grpc.CallOption) (*ListPetsResponse, error) {
 	out := new(ListPetsResponse)
 	err := c.cc.Invoke(ctx, "/proto.PetService/ListPets", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *petServiceClient) DeletePet(ctx context.Context, in *DeletePetRequest, opts ...grpc.CallOption) (*DeletePetResponse, error) {
+	out := new(DeletePetResponse)
+	err := c.cc.Invoke(ctx, "/proto.PetService/DeletePet", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -102,6 +112,7 @@ func (x *petServiceGetMealsClient) Recv() (*Meal, error) {
 type PetServiceServer interface {
 	NewPet(context.Context, *NewPetRequest) (*NewPetResponse, error)
 	ListPets(context.Context, *ListPetsRequest) (*ListPetsResponse, error)
+	DeletePet(context.Context, *DeletePetRequest) (*DeletePetResponse, error)
 	CreateMeal(context.Context, *CreateMealRequest) (*ListMealsResponse, error)
 	GetMeals(*ListMealsRequest, PetService_GetMealsServer) error
 	mustEmbedUnimplementedPetServiceServer()
@@ -116,6 +127,9 @@ func (UnimplementedPetServiceServer) NewPet(context.Context, *NewPetRequest) (*N
 }
 func (UnimplementedPetServiceServer) ListPets(context.Context, *ListPetsRequest) (*ListPetsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListPets not implemented")
+}
+func (UnimplementedPetServiceServer) DeletePet(context.Context, *DeletePetRequest) (*DeletePetResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeletePet not implemented")
 }
 func (UnimplementedPetServiceServer) CreateMeal(context.Context, *CreateMealRequest) (*ListMealsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateMeal not implemented")
@@ -168,6 +182,24 @@ func _PetService_ListPets_Handler(srv interface{}, ctx context.Context, dec func
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(PetServiceServer).ListPets(ctx, req.(*ListPetsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PetService_DeletePet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeletePetRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PetServiceServer).DeletePet(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.PetService/DeletePet",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PetServiceServer).DeletePet(ctx, req.(*DeletePetRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -225,6 +257,10 @@ var PetService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListPets",
 			Handler:    _PetService_ListPets_Handler,
+		},
+		{
+			MethodName: "DeletePet",
+			Handler:    _PetService_DeletePet_Handler,
 		},
 		{
 			MethodName: "CreateMeal",

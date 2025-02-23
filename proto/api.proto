@@ -14,6 +14,7 @@ option go_package = "github.com/tgmuender/pad/proto";
 service PetService {
   rpc NewPet(NewPetRequest) returns (NewPetResponse);
   rpc ListPets(ListPetsRequest) returns (ListPetsResponse);
+  rpc DeletePet(DeletePetRequest) returns (DeletePetResponse);
   rpc CreateMeal(CreateMealRequest) returns (ListMealsResponse);
   rpc GetMeals(ListMealsRequest) returns(stream Meal);
 }
@@ -35,8 +36,19 @@ message NewPetRequest {
 }
 
 message NewPetResponse {
+  // The unique identifier of the pet
   string id = 1;
+  // The name of the pet
   string name = 2;
+}
+
+message DeletePetRequest {
+  // The unique identifier of the pet to be deleted
+  string id = 1;
+}
+
+message DeletePetResponse {
+  
 }
 
 message Pet {

@@ -43,7 +43,8 @@ func newServerCmd() *cobra.Command {
 			storage.Db = db
 
 			db.AutoMigrate(
-				&storage.PetEntity{},
+				&storage.User{},
+				&storage.Pet{},
 				&storage.MealEntity{},
 			)
 

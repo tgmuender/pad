@@ -12,7 +12,7 @@ import (
 	pb "xgmdr.com/pad/proto"
 )
 
-// NewPet creates and persists a new pet entity in the database.
+// NewPet creates and persists a new pet in the database.
 // Returns a response containing the unique id of the created pet.
 func (m *Api) NewPet(grpcContext context.Context, request *pb.NewPetRequest) (*pb.NewPetResponse, error) {
 	logger.Get().Debug("New pet request received")
@@ -45,7 +45,7 @@ func (m *Api) NewPet(grpcContext context.Context, request *pb.NewPetRequest) (*p
 }
 
 // toPetEntity converts a NewPetRequest into a PetEntity.
-func toPetEntity(user *storage.User, request *pb.NewPetRequest) (*storage.PetEntity, error) {
+func toPetEntity(user *storage.User, request *pb.NewPetRequest) (*storage.Pet, error) {
 	id, err := uuid.NewRandom()
 	if err != nil {
 		log.Fatalf("Unable to generate id for new pet request: %v", request.Name)
@@ -60,7 +60,7 @@ func toPetEntity(user *storage.User, request *pb.NewPetRequest) (*storage.PetEnt
 		return nil, err
 	}
 
-	return &storage.PetEntity{
+	return &storage.Pet{
 		ID:      id,
 		OwnerID: user.Id,
 		Data:    string(requestData),

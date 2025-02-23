@@ -12,8 +12,8 @@ import (
 
 var Db *gorm.DB
 
-// PetEntity represents a pet in the database
-type PetEntity struct {
+// Pet represents a pet in the database
+type Pet struct {
 	// The unique identifier of the pet
 	ID uuid.UUID `gorm:"type:uuid;primary_key;"`
 	// The unique identifier of the owner of the pet
@@ -38,7 +38,7 @@ type MealEntity struct {
 }
 
 // InsertPet persists the given pet into the database
-func InsertPet(petEntity *PetEntity) error {
+func InsertPet(petEntity *Pet) error {
 	fmt.Println("Inserting into database")
 
 	return crdbgorm.ExecuteTx(context.Background(), Db, nil,
@@ -49,8 +49,8 @@ func InsertPet(petEntity *PetEntity) error {
 }
 
 // GetPetByName queries the database to find a pet with the given name.
-func GetPetByName(name string, ownerId uuid.UUID) (*PetEntity, error) {
-	var pet PetEntity
+func GetPetByName(name string, ownerId uuid.UUID) (*Pet, error) {
+	var pet Pet
 	result := Db.Where("data ->> 'name' = ? and owner_id = ?", name, ownerId).First(&pet)
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
@@ -63,21 +63,33 @@ func GetPetByName(name string, ownerId uuid.UUID) (*PetEntity, error) {
 }
 
 // FindByOwner queries the database to find all pets whose owner is set to the given owner.
-func FindByOwner(user *User) []PetEntity {
+func FindByOwner(user *User) []Pet {
 	if user == nil {
-		return []PetEntity{}
+		return []Pet{}
 	}
 
-	var result []PetEntity
-	/*	Db.Where(
-		&PetEntity{
-			Owner: Owner{
-				Issuer:  owner.Issuer,
-				OwnerId: owner.OwnerId,
-			},
-		},
-	).Find(&result)*/
+	var result []Pet
+	Db.Where("owner_id = ?", user.Id).Find(&result)
 	return result
+}
+
+// ExistsForOwner checks if a pet with the given ID exists and is owned by the given user.
+func ExistsForOwner(petId uuid.UUID, user *User) bool {
+	if user == nil {
+		return false
+	}
+
+	var count int64
+	Db.Model(&Pet{}).Where("id = ? and owner_id = ?", petId, user.Id).Count(&count)
+	return count > 0
+}
+
+func DeletePet(petId uuid.UUID) error {
+	return crdbgorm.ExecuteTx(context.Background(), Db, nil,
+		func(tx *gorm.DB) error {
+			return tx.Delete(&Pet{ID: petId}).Error
+		},
+	)
 }
 
 // FindMealsByPetID queries the database to find all meals whose pet ID is set to the given ID.

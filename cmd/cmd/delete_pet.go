@@ -4,17 +4,18 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"os"
-	client "xgmdr.com/pad/internal/client"
+	"xgmdr.com/pad/internal/client"
 	"xgmdr.com/pad/proto"
 )
 
-// newListPetsCommand creates a new command listing all pets to which the currently authenticated user has access to.
-func newListPetsCommand() *cobra.Command {
+// deletePetCommand creates a new command to delete a pet.
+func newDeletePetCommand() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "list",
-		Short: "List all pets",
+		Use:   "delete",
+		Short: "Delete a pet",
 		Run: func(cmd *cobra.Command, args []string) {
 			endpoint, _ := cmd.Flags().GetString("endpoint")
+			id, _ := cmd.Flags().GetString("id")
 
 			apiClient, ctx, cancel := client.PetServiceGrpcClient(endpoint)
 			defer cancel()
@@ -25,16 +26,19 @@ func newListPetsCommand() *cobra.Command {
 				os.Exit(1)
 			}
 
-			res, err := apiClient.ListPets(ctx, &proto.ListPetsRequest{})
+			_, err = apiClient.DeletePet(ctx, &proto.DeletePetRequest{
+				Id: id,
+			})
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			fmt.Printf("Found %v pets: ", len(res.Pets))
-			fmt.Println(res.Pets)
 		},
 	}
-	
+
+	cmd.Flags().String("id", "", "ID of the pet to delete")
+	cmd.MarkFlagRequired("id")
+
 	return cmd
 }
