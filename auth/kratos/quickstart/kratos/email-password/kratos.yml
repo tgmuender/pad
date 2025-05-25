@@ -1,18 +1,19 @@
-version: v1.1.0
+version: v0.13.0
 
 dsn: memory
 
 serve:
   public:
-    base_url: http://127.0.0.1:4433/
+    base_url: http://id.petadvisor.internal/
     cors:
       enabled: true
   admin:
-    base_url: http://kratos:4434/
+    base_url: http://id.petadvisor.internal:4434/
 
 selfservice:
-  default_browser_return_url: http://127.0.0.1:4455/
+  default_browser_return_url: http://id.petadvisor.internal/auth
   allowed_return_urls:
+    - http://id.petadvisor.internal
     - http://127.0.0.1:4455
 
   methods:
@@ -48,36 +49,36 @@ selfservice:
 
   flows:
     error:
-      ui_url: http://127.0.0.1:4455/error
+      ui_url: http://id.petadvisor.internal/auth/errors
 
     settings:
-      ui_url: http://localdev.me:4455/settings
+      ui_url: http://id.petadvisor.internal/auth/settings
       privileged_session_max_age: 15m
       required_aal: highest_available
 
     recovery:
       enabled: true
-      ui_url: http://127.0.0.1:4455/recovery
+      ui_url: http://id.petadvisor.internal/auth/recovery
       use: code
 
     verification:
       enabled: true
-      ui_url: http://127.0.0.1:4455/verification
+      ui_url: http://id.petadvisor.internal/auth/verification
       use: code
       after:
-        default_browser_return_url: http://127.0.0.1:4455/
+        default_browser_return_url: http://id.petadvisor.internal/auth
 
     logout:
       after:
-        default_browser_return_url: http://127.0.0.1:4455/login
+        default_browser_return_url: http://id.petadvisor.internal/auth/login
 
     login:
-      ui_url: http://127.0.0.1:4455/login
+      ui_url: http://id.petadvisor.internal/auth/login
       lifespan: 10m
 
     registration:
       lifespan: 10m
-      ui_url: http://127.0.0.1:4455/registration
+      ui_url: http://id.petadvisor.internal/auth/registration
       after:
         password:
           hooks:
@@ -119,4 +120,5 @@ identity:
 
 courier:
   smtp:
-    connection_uri: smtps://test:test@mailslurper:1025/?skip_ssl_verify=true
+    # See https://www.ory.sh/docs/kratos/emails-sms/sending-emails-smtp#smtp-security-mechanisms
+    connection_uri: smtp://@mailpit:1025/?disable_starttls=true
