@@ -18,6 +18,7 @@ services:
       - ./reverse-proxy/petadvisor.conf:/etc/nginx/conf.d/petadvisor.conf:ro
       - ./reverse-proxy/oauth.conf:/etc/nginx/conf.d/oauth.conf:ro
       - ./reverse-proxy/app.petadvisor.conf:/etc/nginx/conf.d/app.petadvisor.conf:ro
+      - ./reverse-proxy/data.petadvisor.conf:/etc/nginx/conf.d/data.petadvisor.conf:ro
     networks:
       intranet:
         ipv4_address: 172.30.0.2
