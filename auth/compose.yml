@@ -8,18 +8,16 @@ services:
     depends_on:
       - kratos
       - kratos-selfservice-ui-node
+      - hydra
     image: nginx:latest
     container_name: reverse-proxy
     restart: on-failure
     volumes:
-      - type: bind
-        source: ./reverse-proxy/id.conf
-        target: /etc/nginx/conf.d/id.conf
-        read_only: true
-      - type: bind
-        source: ./reverse-proxy/petadvisor.conf
-        target: /etc/nginx/conf.d/petadvisor.conf
-        read_only: true
+      - ./reverse-proxy/landing-page:/usr/share/nginx/html:ro
+      - ./reverse-proxy/id.conf:/etc/nginx/conf.d/id.conf:ro
+      - ./reverse-proxy/petadvisor.conf:/etc/nginx/conf.d/petadvisor.conf:ro
+      - ./reverse-proxy/oauth.conf:/etc/nginx/conf.d/oauth.conf:ro
+      - ./reverse-proxy/app.petadvisor.conf:/etc/nginx/conf.d/app.petadvisor.conf:ro
     networks:
       intranet:
         ipv4_address: 172.30.0.2
@@ -141,24 +139,19 @@ services:
     networks:
       - intranet
 
-  dex:
-    image: ghcr.io/dexidp/dex:v2.39.1
-    container_name: dex
-    user: 1001:1001
-    ports:
-      - "127.0.0.1:5556:5556"
-    volumes:
-      - type: bind
-        source: ./dex/config-dev.yaml
-        target: /dex/config-dev.yaml
-      - type: bind
-        source: ./dex/db
-        target: /dex/db
-    env_file:
-      - ./dex/env
-    command: dex serve /dex/config-dev.yaml
-    restart: on-failure
-    network_mode: host
+  consent-ui:
+      image: docker.io/oryd/hydra-login-consent-node:latest-custom
+      user: "10000:101"
+      restart: unless-stopped
+      ports:
+        - "3000:3000"
+      environment:
+        - HYDRA_ADMIN_URL=http://hydra:4445/
+        - KRATOS_ADMIN_URL=http://kratos:4434
+      networks:
+        - intranet
+
+
 
   oauth2-proxy:
     image: quay.io/oauth2-proxy/oauth2-proxy:v7.6.0
@@ -180,6 +173,27 @@ services:
         target: /etc/envoy/envoy.yaml
         read_only: true
     network_mode: host
+
+
+  minio:
+    image: quay.io/minio/minio:latest
+    user: 1000:1000
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - type: bind
+        source: ./minio/data
+        target: /data
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    restart: on-failure
+    networks:
+      intranet:
+        aliases:
+          - minio
 
 networks:
   intranet:

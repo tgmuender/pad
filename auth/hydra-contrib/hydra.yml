@@ -4,11 +4,15 @@ serve:
 
 urls:
   self:
-    issuer: http://127.0.0.1:4444
-  consent: http://127.0.0.1:3000/consent
+    issuer: http://oauth.petadvisor.internal
+    #issuer: http://127.0.0.1:4444
+  consent: http://oauth.petadvisor.internal/consent
+  #consent: http://127.0.0.1:3000/consent
   # Login/Logout should point to Kratos' selfservice UI
-  login: "http://127.0.0.1:4455/login"
-  logout: http://127.0.0.1:4455/logout
+  #login: "http://127.0.0.1:4455/login"
+  login: "http://id.petadvisor.internal/auth/login"
+  #logout: http://127.0.0.1:4455/logout
+  logout: http://id.petadvisor.internal/auth/logout
 
 secrets:
   system:
