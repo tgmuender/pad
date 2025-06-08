@@ -64,9 +64,7 @@
             case "Male": return Sex.MALE;
             default: return Sex.UNKNOWN;
         }
-
     }
-
 
     async function handleSubmit(event) {
         event.preventDefault();

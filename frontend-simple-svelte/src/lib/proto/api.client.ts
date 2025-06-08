@@ -4,6 +4,8 @@
 import type { RpcTransport } from "@protobuf-ts/runtime-rpc";
 import type { ServiceInfo } from "@protobuf-ts/runtime-rpc";
 import { PetService } from "./api";
+import type { SetProfilePictureResponse } from "./api";
+import type { SetProfilePictureRequest } from "./api";
 import type { Meal } from "./api";
 import type { ListMealsRequest } from "./api";
 import type { ServerStreamingCall } from "@protobuf-ts/runtime-rpc";
@@ -42,6 +44,10 @@ export interface IPetServiceClient {
      * @generated from protobuf rpc: GetMeals(proto.ListMealsRequest) returns (stream proto.Meal);
      */
     getMeals(input: ListMealsRequest, options?: RpcOptions): ServerStreamingCall<ListMealsRequest, Meal>;
+    /**
+     * @generated from protobuf rpc: SetProfilePicture(proto.SetProfilePictureRequest) returns (proto.SetProfilePictureResponse);
+     */
+    setProfilePicture(input: SetProfilePictureRequest, options?: RpcOptions): UnaryCall<SetProfilePictureRequest, SetProfilePictureResponse>;
 }
 /**
  * @generated from protobuf service proto.PetService
@@ -86,5 +92,12 @@ export class PetServiceClient implements IPetServiceClient, ServiceInfo {
     getMeals(input: ListMealsRequest, options?: RpcOptions): ServerStreamingCall<ListMealsRequest, Meal> {
         const method = this.methods[4], opt = this._transport.mergeOptions(options);
         return stackIntercept<ListMealsRequest, Meal>("serverStreaming", this._transport, method, opt, input);
+    }
+    /**
+     * @generated from protobuf rpc: SetProfilePicture(proto.SetProfilePictureRequest) returns (proto.SetProfilePictureResponse);
+     */
+    setProfilePicture(input: SetProfilePictureRequest, options?: RpcOptions): UnaryCall<SetProfilePictureRequest, SetProfilePictureResponse> {
+        const method = this.methods[5], opt = this._transport.mergeOptions(options);
+        return stackIntercept<SetProfilePictureRequest, SetProfilePictureResponse>("unary", this._transport, method, opt, input);
     }
 }

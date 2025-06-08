@@ -48,6 +48,46 @@ export interface NewPetRequest {
     description: string;
 }
 /**
+ * @generated from protobuf message proto.SetProfilePictureRequest
+ */
+export interface SetProfilePictureRequest {
+    /**
+     * The unique identifier of the pet
+     *
+     * @generated from protobuf field: string petId = 1;
+     */
+    petId: string;
+    /**
+     * The name of the file to be uploaded
+     *
+     * @generated from protobuf field: string filename = 2;
+     */
+    filename: string;
+}
+/**
+ * @generated from protobuf message proto.SetProfilePictureResponse
+ */
+export interface SetProfilePictureResponse {
+    /**
+     * The unique identifier of the pet
+     *
+     * @generated from protobuf field: string petId = 1;
+     */
+    petId: string;
+    /**
+     * The URL of the profile picture
+     *
+     * @generated from protobuf field: string objectId = 2;
+     */
+    objectId: string;
+    /**
+     * A message indicating success or failure
+     *
+     * @generated from protobuf field: string uploadUrl = 3;
+     */
+    uploadUrl: string;
+}
+/**
  * @generated from protobuf message proto.NewPetResponse
  */
 export interface NewPetResponse {
@@ -302,6 +342,124 @@ class NewPetRequest$Type extends MessageType<NewPetRequest> {
  * @generated MessageType for protobuf message proto.NewPetRequest
  */
 export const NewPetRequest = new NewPetRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class SetProfilePictureRequest$Type extends MessageType<SetProfilePictureRequest> {
+    constructor() {
+        super("proto.SetProfilePictureRequest", [
+            { no: 1, name: "petId", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "filename", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<SetProfilePictureRequest>): SetProfilePictureRequest {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.petId = "";
+        message.filename = "";
+        if (value !== undefined)
+            reflectionMergePartial<SetProfilePictureRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: SetProfilePictureRequest): SetProfilePictureRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string petId */ 1:
+                    message.petId = reader.string();
+                    break;
+                case /* string filename */ 2:
+                    message.filename = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: SetProfilePictureRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string petId = 1; */
+        if (message.petId !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.petId);
+        /* string filename = 2; */
+        if (message.filename !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.filename);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message proto.SetProfilePictureRequest
+ */
+export const SetProfilePictureRequest = new SetProfilePictureRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class SetProfilePictureResponse$Type extends MessageType<SetProfilePictureResponse> {
+    constructor() {
+        super("proto.SetProfilePictureResponse", [
+            { no: 1, name: "petId", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "objectId", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "uploadUrl", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<SetProfilePictureResponse>): SetProfilePictureResponse {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.petId = "";
+        message.objectId = "";
+        message.uploadUrl = "";
+        if (value !== undefined)
+            reflectionMergePartial<SetProfilePictureResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: SetProfilePictureResponse): SetProfilePictureResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string petId */ 1:
+                    message.petId = reader.string();
+                    break;
+                case /* string objectId */ 2:
+                    message.objectId = reader.string();
+                    break;
+                case /* string uploadUrl */ 3:
+                    message.uploadUrl = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: SetProfilePictureResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string petId = 1; */
+        if (message.petId !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.petId);
+        /* string objectId = 2; */
+        if (message.objectId !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.objectId);
+        /* string uploadUrl = 3; */
+        if (message.uploadUrl !== "")
+            writer.tag(3, WireType.LengthDelimited).string(message.uploadUrl);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message proto.SetProfilePictureResponse
+ */
+export const SetProfilePictureResponse = new SetProfilePictureResponse$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class NewPetResponse$Type extends MessageType<NewPetResponse> {
     constructor() {
@@ -932,5 +1090,6 @@ export const PetService = new ServiceType("proto.PetService", [
     { name: "ListPets", options: {}, I: ListPetsRequest, O: ListPetsResponse },
     { name: "DeletePet", options: {}, I: DeletePetRequest, O: DeletePetResponse },
     { name: "CreateMeal", options: {}, I: CreateMealRequest, O: ListMealsResponse },
-    { name: "GetMeals", serverStreaming: true, options: {}, I: ListMealsRequest, O: Meal }
+    { name: "GetMeals", serverStreaming: true, options: {}, I: ListMealsRequest, O: Meal },
+    { name: "SetProfilePicture", options: {}, I: SetProfilePictureRequest, O: SetProfilePictureResponse }
 ]);

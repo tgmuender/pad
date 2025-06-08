@@ -16,6 +16,7 @@ service PetService {
   rpc DeletePet(DeletePetRequest) returns (DeletePetResponse);
   rpc CreateMeal(CreateMealRequest) returns (ListMealsResponse);
   rpc GetMeals(ListMealsRequest) returns(stream Meal);
+  rpc SetProfilePicture(SetProfilePictureRequest) returns (SetProfilePictureResponse);
 }
 
 
@@ -30,6 +31,22 @@ message NewPetRequest {
   google.protobuf.Timestamp dob = 4;
   // Optional: a description of the pet, e.g. "A friendly dog"
   string description = 5;
+}
+
+message SetProfilePictureRequest {
+  // The unique identifier of the pet
+  string petId = 1;
+  // The name of the file to be uploaded
+  string filename = 2;
+}
+
+message SetProfilePictureResponse {
+  // The unique identifier of the pet
+  string petId = 1;
+  // The URL of the profile picture
+  string objectId = 2;
+  // A message indicating success or failure
+  string uploadUrl = 3;
 }
 
 message NewPetResponse {

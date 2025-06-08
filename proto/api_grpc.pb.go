@@ -27,6 +27,7 @@ type PetServiceClient interface {
 	DeletePet(ctx context.Context, in *DeletePetRequest, opts ...grpc.CallOption) (*DeletePetResponse, error)
 	CreateMeal(ctx context.Context, in *CreateMealRequest, opts ...grpc.CallOption) (*ListMealsResponse, error)
 	GetMeals(ctx context.Context, in *ListMealsRequest, opts ...grpc.CallOption) (PetService_GetMealsClient, error)
+	SetProfilePicture(ctx context.Context, in *SetProfilePictureRequest, opts ...grpc.CallOption) (*SetProfilePictureResponse, error)
 }
 
 type petServiceClient struct {
@@ -105,6 +106,15 @@ func (x *petServiceGetMealsClient) Recv() (*Meal, error) {
 	return m, nil
 }
 
+func (c *petServiceClient) SetProfilePicture(ctx context.Context, in *SetProfilePictureRequest, opts ...grpc.CallOption) (*SetProfilePictureResponse, error) {
+	out := new(SetProfilePictureResponse)
+	err := c.cc.Invoke(ctx, "/proto.PetService/SetProfilePicture", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PetServiceServer is the server API for PetService service.
 // All implementations must embed UnimplementedPetServiceServer
 // for forward compatibility
@@ -114,6 +124,7 @@ type PetServiceServer interface {
 	DeletePet(context.Context, *DeletePetRequest) (*DeletePetResponse, error)
 	CreateMeal(context.Context, *CreateMealRequest) (*ListMealsResponse, error)
 	GetMeals(*ListMealsRequest, PetService_GetMealsServer) error
+	SetProfilePicture(context.Context, *SetProfilePictureRequest) (*SetProfilePictureResponse, error)
 	mustEmbedUnimplementedPetServiceServer()
 }
 
@@ -135,6 +146,9 @@ func (UnimplementedPetServiceServer) CreateMeal(context.Context, *CreateMealRequ
 }
 func (UnimplementedPetServiceServer) GetMeals(*ListMealsRequest, PetService_GetMealsServer) error {
 	return status.Errorf(codes.Unimplemented, "method GetMeals not implemented")
+}
+func (UnimplementedPetServiceServer) SetProfilePicture(context.Context, *SetProfilePictureRequest) (*SetProfilePictureResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetProfilePicture not implemented")
 }
 func (UnimplementedPetServiceServer) mustEmbedUnimplementedPetServiceServer() {}
 
@@ -242,6 +256,24 @@ func (x *petServiceGetMealsServer) Send(m *Meal) error {
 	return x.ServerStream.SendMsg(m)
 }
 
+func _PetService_SetProfilePicture_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SetProfilePictureRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PetServiceServer).SetProfilePicture(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.PetService/SetProfilePicture",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PetServiceServer).SetProfilePicture(ctx, req.(*SetProfilePictureRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // PetService_ServiceDesc is the grpc.ServiceDesc for PetService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -264,6 +296,10 @@ var PetService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateMeal",
 			Handler:    _PetService_CreateMeal_Handler,
+		},
+		{
+			MethodName: "SetProfilePicture",
+			Handler:    _PetService_SetProfilePicture_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
