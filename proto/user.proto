@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package user;
+
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/tgmuender/pad/proto";
+
+service UserService {
+  rpc WhoAmI(google.protobuf.Empty) returns (UserResponse);
+}
+
+message UserResponse {
+  string sub = 1;
+  string email = 2;
+}

@@ -2,7 +2,6 @@ syntax = "proto3";
 
 package proto;
 
-import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
 option java_multiple_files = true;
@@ -19,20 +18,18 @@ service PetService {
   rpc GetMeals(ListMealsRequest) returns(stream Meal);
 }
 
-service UserService {
-  rpc WhoAmI(google.protobuf.Empty) returns (UserResponse);
-}
-
-message UserResponse {
-  string sub = 1;
-  string email = 2;
-}
 
 message NewPetRequest {
+  // The name of the pet, e.g. "Buddy"
   string name = 1;
+  // Optional
   Sex sex = 2;
+  // Optional: type of the pet, e.g. "dog", "cat", etc.
   string type = 3;
+  // Optional: date of birth, e.g. "2020-01-01T00:00:00Z"
   google.protobuf.Timestamp dob = 4;
+  // Optional: a description of the pet, e.g. "A friendly dog"
+  string description = 5;
 }
 
 message NewPetResponse {
