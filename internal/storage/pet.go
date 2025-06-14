@@ -28,6 +28,13 @@ type Pet struct {
 	Data string `gorm:"type:jsonb" json:"data"`
 }
 
+// PetOverview represents a pet with additional profile picture metadata
+// This struct is used to provide an overview of a pet, including its profile picture.
+type PetOverview struct {
+	Pet
+	ProfilePicture *FileMetadata
+}
+
 // MealEntity represents a meal in the database
 type MealEntity struct {
 	ID        uuid.UUID `gorm:"type:uuid;primary_key;"`
@@ -63,14 +70,36 @@ func GetPetByName(name string, ownerId uuid.UUID) (*Pet, error) {
 }
 
 // FindByOwner queries the database to find all pets whose owner is set to the given owner.
-func FindByOwner(user *User) []Pet {
+func FindByOwner(user *User) []PetOverview {
 	if user == nil {
-		return []Pet{}
+		return []PetOverview{}
 	}
 
-	var result []Pet
-	Db.Where("owner_id = ?", user.Id).Find(&result)
-	return result
+	var pets []Pet
+	Db.Where("owner_id = ?", user.Id).Find(&pets)
+
+	var petOverviews []PetOverview
+	for _, pet := range pets {
+		var fm *FileMetadata
+		dbResult := Db.Model(&FileMetadata{}).
+			Where("pet_id = ? and type = ?", pet.ID, ProfilePicture).
+			Order("created_at desc").
+			First(&fm)
+		if dbResult.Error == nil {
+			petOverviews = append(petOverviews, PetOverview{
+				Pet:            pet,
+				ProfilePicture: fm,
+			})
+		} else {
+			// Either the profile picture does not exist or there was an error retrieving it
+			petOverviews = append(petOverviews, PetOverview{
+				Pet:            pet,
+				ProfilePicture: nil,
+			})
+		}
+	}
+
+	return petOverviews
 }
 
 // ExistsForOwner checks if a pet with the given ID exists and is owned by the given user.

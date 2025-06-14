@@ -21,6 +21,7 @@
             <th scope="col">Name</th>
             <th scope="col">Type</th>
             <th scope="col">Id</th>
+            <th scope="col">Profile Pic</th>
         </tr>
         </thead>
         <tbody>
@@ -30,6 +31,9 @@
                 <td>{pet.name}</td>
                 <td>{pet.type}</td>
                 <td class="vermall">{pet.id}</td>
+                <td>
+                    <img src={pet.profilePictureUrl}  class="img-thumbnail" style="max-width: 100px; max-height: 100px;">
+                </td>
             </tr>
         {/each}
         </tbody>

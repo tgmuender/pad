@@ -19,6 +19,7 @@ My pets
             <th scope="col">Name</th>
             <th scope="col">Type</th>
             <th scope="col">Id</th>
+            <th scope="col">Profile Pic</th>
         </tr>
         </thead>
         <tbody>
@@ -28,6 +29,7 @@ My pets
                 <td>{pet.name}</td>
                 <td>{pet.type}</td>
                 <td>{pet.id}</td>
+                <td>asdf</td>
             </tr>
         {/each}
         </tbody>

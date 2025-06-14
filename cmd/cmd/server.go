@@ -41,7 +41,7 @@ func newServerCmd() *cobra.Command {
 			if err := service.PrepareBucket(); err != nil {
 				log.Fatalf("failed to prepare bucket: %v", err)
 			}
-			url, err := service.GetPreSignedUrl("/pets/12345/image.jpg")
+			url, err := service.GetPreSignedUrl("/pets/12345/image.jpg", "PUT")
 
 			fmt.Println(url)
 
@@ -49,7 +49,9 @@ func newServerCmd() *cobra.Command {
 				grpc.UnaryInterceptor(api.AuthenticatingInterceptor()),
 			)
 
-			pb.RegisterPetServiceServer(s, &pet.Api{})
+			pb.RegisterPetServiceServer(s, &pet.Api{
+				S3: service,
+			})
 			pb.RegisterUserServiceServer(s, &user.Api{})
 			log.Printf("server listening at %v", lis.Addr())
 
@@ -64,6 +66,7 @@ func newServerCmd() *cobra.Command {
 				&storage.User{},
 				&storage.Pet{},
 				&storage.MealEntity{},
+				&storage.FileMetadata{},
 			)
 
 			if err := s.Serve(lis); err != nil {

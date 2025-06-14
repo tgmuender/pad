@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"github.com/minio/minio-go/v7"
+	url "net/url"
+	"strings"
 	"time"
 )
 
@@ -21,18 +23,26 @@ func NewS3StorageService(client *minio.Client, bucketName string) *S3StorageServ
 	}
 }
 
-func (s *S3StorageService) GetPreSignedUrl(objectName string) (string, error) {
+func (s *S3StorageService) GetPreSignedUrl(objectName, method string) (string, error) {
 	ctx := context.Background()
-
 	duration, _ := time.ParseDuration("1h") // Example duration, adjust as needed
 
-	// Generate a pre-signed URL for the object
-	presignedURL, err := s.client.PresignedPutObject(ctx, s.bucketName, objectName, duration)
+	var presignedURL *url.URL
+	var err error
+
+	switch strings.ToUpper(method) {
+	case "GET":
+		presignedURL, err = s.client.PresignedGetObject(ctx, s.bucketName, objectName, duration, nil)
+	case "PUT":
+		presignedURL, err = s.client.PresignedPutObject(ctx, s.bucketName, objectName, duration)
+	default:
+		return "", fmt.Errorf("unsupported method: %s", method)
+	}
+
 	if err != nil {
 		fmt.Println("Error generating pre-signed URL:", err)
 		return "", err
 	}
-
 	return presignedURL.String(), nil
 }
 

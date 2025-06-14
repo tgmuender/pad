@@ -144,6 +144,14 @@ export interface Pet {
      * @generated from protobuf field: google.protobuf.Timestamp dob = 5;
      */
     dob?: Timestamp;
+    /**
+     * @generated from protobuf field: string description = 6;
+     */
+    description: string;
+    /**
+     * @generated from protobuf field: string profilePictureUrl = 7;
+     */
+    profilePictureUrl: string; // URL to the pet's profile picture
 }
 /**
  * @generated from protobuf message proto.ListPetsResponse
@@ -595,7 +603,9 @@ class Pet$Type extends MessageType<Pet> {
             { no: 2, name: "name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 3, name: "sex", kind: "enum", T: () => ["proto.Sex", Sex] },
             { no: 4, name: "type", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 5, name: "dob", kind: "message", T: () => Timestamp }
+            { no: 5, name: "dob", kind: "message", T: () => Timestamp },
+            { no: 6, name: "description", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 7, name: "profilePictureUrl", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<Pet>): Pet {
@@ -604,6 +614,8 @@ class Pet$Type extends MessageType<Pet> {
         message.name = "";
         message.sex = 0;
         message.type = "";
+        message.description = "";
+        message.profilePictureUrl = "";
         if (value !== undefined)
             reflectionMergePartial<Pet>(this, message, value);
         return message;
@@ -627,6 +639,12 @@ class Pet$Type extends MessageType<Pet> {
                     break;
                 case /* google.protobuf.Timestamp dob */ 5:
                     message.dob = Timestamp.internalBinaryRead(reader, reader.uint32(), options, message.dob);
+                    break;
+                case /* string description */ 6:
+                    message.description = reader.string();
+                    break;
+                case /* string profilePictureUrl */ 7:
+                    message.profilePictureUrl = reader.string();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -655,6 +673,12 @@ class Pet$Type extends MessageType<Pet> {
         /* google.protobuf.Timestamp dob = 5; */
         if (message.dob)
             Timestamp.internalBinaryWrite(message.dob, writer.tag(5, WireType.LengthDelimited).fork(), options).join();
+        /* string description = 6; */
+        if (message.description !== "")
+            writer.tag(6, WireType.LengthDelimited).string(message.description);
+        /* string profilePictureUrl = 7; */
+        if (message.profilePictureUrl !== "")
+            writer.tag(7, WireType.LengthDelimited).string(message.profilePictureUrl);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

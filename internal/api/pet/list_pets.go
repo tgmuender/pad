@@ -19,7 +19,7 @@ func (m *Api) ListPets(grpcContext context.Context, request *pb.ListPetsRequest)
 		logger.Get().Debug("User not found")
 		return nil, errors.New("user not found in context")
 	}
-	
+
 	var result = storage.FindByOwner(user)
 
 	logger.Get().Debug("Pet count matching user ", zap.Int("count", len(result)))
@@ -30,10 +30,18 @@ func (m *Api) ListPets(grpcContext context.Context, request *pb.ListPetsRequest)
 
 		var npr pb.NewPetRequest
 		_ = json.Unmarshal([]byte(pe.Data), &npr)
+
+		// Check if the pet has a profile picture
+		var url string
+		if pe.ProfilePicture != nil {
+			url, _ = m.S3.GetPreSignedUrl(pe.ProfilePicture.ObjectKey, "get")
+		}
+
 		pets = append(pets, &pb.Pet{
-			Id:   pe.ID.String(),
-			Name: npr.Name,
-			Type: npr.Type,
+			Id:                pe.ID.String(),
+			Name:              npr.Name,
+			Type:              npr.Type,
+			ProfilePictureUrl: url,
 		})
 	}
 

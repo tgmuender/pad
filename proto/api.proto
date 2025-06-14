@@ -71,6 +71,8 @@ message Pet {
   Sex sex = 3;
   string type = 4;
   google.protobuf.Timestamp dob = 5;
+  string description = 6;
+  string profilePictureUrl = 7; // URL to the pet's profile picture
 }
 
 message ListPetsResponse {
