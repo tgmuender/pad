@@ -4,13 +4,13 @@
 version: '3.7'
 services:
 
-  reverse-proxy:
+  nginx:
     depends_on:
       - kratos
       - kratos-selfservice-ui-node
       - hydra
     image: nginx:latest
-    container_name: reverse-proxy
+    container_name: nginx
     restart: on-failure
     volumes:
       - ./reverse-proxy/landing-page:/usr/share/nginx/html:ro
@@ -86,13 +86,17 @@ services:
 
   mailpit:
     image: axllent/mailpit
+    user: 1000:1000
     ports:
-      - '8025:8025'
-      - '1025:1025'
+      - '127.0.0.1:8025:8025'
+      - '127.0.0.1:1025:1025'
     environment:
+      MP_DATABASE: /data/mailpit.db
       MP_SMTP_AUTH_ACCEPT_ANY: 1
       MP_SMTP_AUTH_ALLOW_INSECURE: 1
     restart: unless-stopped
+    volumes:
+      - ./mailpit:/data
     networks:
       - intranet
 
@@ -152,8 +156,6 @@ services:
       networks:
         - intranet
 
-
-
   oauth2-proxy:
     image: quay.io/oauth2-proxy/oauth2-proxy:v7.6.0
     container_name: oauth2-proxy
@@ -168,6 +170,9 @@ services:
 
   envoy:
     image: envoyproxy/envoy:debug-dev
+    command:
+      - --config-path /etc/envoy/envoy.yaml
+      - --log-level debug
     volumes:
       - type: bind
         source: ./envoy/envoy.yaml
